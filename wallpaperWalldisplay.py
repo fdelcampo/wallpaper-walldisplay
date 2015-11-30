@@ -18,15 +18,15 @@ except ImportError:
 
 
 # Tile IDs are generated following this pattern:
-# -------------------------
-# | A1 | 2 | 3 | 4 | 5 | 6 |
-# -------------------------
-# | A2 | 2 | 3 | 4 | 5 | 6 |
-# -------------------------
-# | A3 | 2 | 3 | 4 | 5 | 6 |
-# -------------------------
-# | A4 | 2 | 3 | 4 | 5 | 6 |
-# -------------------------
+# -------------------------------------
+# | AL1 | AR1 | BL1 | BR1 | CL1 | CR1 |
+# -------------------------------------
+# | AL2 | AR2 | BL2 | BR2 | CL2 | CR2 |
+# -------------------------------------
+# | AL3 | AR3 | BL3 | BR3 | CL3 | CR3 |
+# -------------------------------------
+# | AL4 | AR4 | BL4 | BR4 | CL4 | CR4 |
+# -------------------------------------
 
 
 CMD_LINE_HELP = "Wallpaper for Wall-display Script\n\nUsage:\n\n" + \
@@ -35,16 +35,18 @@ CMD_LINE_HELP = "Wallpaper for Wall-display Script\n\nUsage:\n\n" + \
 	"\t-im\t\tprocessing pipeline: PIL and ImageMagick (default)\n"+\
 	"\t-w=N\t\twidth size screen (N in pixels) default 1920\n"+\
 	"\t-h=N\t\theight size screen (N in pixels) default 1080\n"+\
-	"\t-bw=N\t\tbezel width size screen (N in pixels) default 100\n"+\
+	"\t-bw=N\t\tbezel width size screen (N in pixels) default 80\n"+\
 	"\t-bh=N\t\tbezel height size screen (N in pixels) default 100\n"+\
-	"\t-rows=N\t\tCount of rows\n"+\
-	"\t-cols=N\t\tCount of cols\n"+\
+	"\t-rows=N\t\tCount of rows default 4\n"+\
+	"\t-cols=N\t\tCount of cols default 6\n"+\
+	"\t-displace-x=N\t\tDisplace x-axes in pixels\n"+\
+	"\t-displace-y=N\t\tDisplace y-axes in pixels\n"+\
 	"\t-format=t\tt output tiles in PNG (png), JPEG (jpg) or TIFF (tiff)\n"
 
 
 WIDTH = 1920
 HEIGHT = 1080
-BEZELWIDTH = 100
+BEZELWIDTH = 80
 BEZELHEIGHT = 100
 ROWS = 4
 COLS = 6
@@ -116,7 +118,7 @@ if len(sys.argv) > 2:
 				DISPLACE_Y = int(arg[len("-displace-y="):])
 
 	if not SUCCEEDED_IMPORTING_PIL:
-		log("PIL not available")
+		print "PIL not available"
 		sys.exit(0)
 
 	createTargetDir()
