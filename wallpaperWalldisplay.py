@@ -72,8 +72,18 @@ def buildTiles(tileName, x, y, src_sz, im):
 	print "(%s, %d, %d, [%d, %d])" % (tileName, x, y, src_sz[0], src_sz[1])
 	#if x+WIDTH > src_sz[0]:
 
-	ccl = "convert %s -crop %dx%d+%d+%d -background black -extent %dx%d -quality 95 %s" % (SRC_PATH, WIDTH, HEIGHT, x, y, WIDTH, HEIGHT, TGT_DIR+"/"+tileName)
-
+	#ccl = "convert %s -crop %dx%d+%d+%d -background black -extent %dx%d -quality 95 %s" % (SRC_PATH, WIDTH, HEIGHT, x, y, WIDTH, HEIGHT, TGT_DIR+"/"+tileName)
+	
+	if x >= 0 and y >= 0 and x < src_sz[0] and y < src_sz[1]:
+		ccl = "convert %s -crop %dx%d+%d+%d -background black -extent %dx%d -quality 95 %s" % (SRC_PATH, WIDTH, HEIGHT, x, y, WIDTH, HEIGHT, TGT_DIR+"/"+tileName)
+	elif x < 0 and y >= 0 and y < src_sz[1]:
+		ccl = "convert %s -crop %dx%d+%d+%d -background black -gravity East -extent %dx%d +repage -quality 95 %s" % (SRC_PATH, WIDTH, HEIGHT, x, y, WIDTH, HEIGHT, TGT_DIR+"/"+tileName)
+	elif y < 0 and x >= 0 and x < src_sz[0]:
+		ccl = "convert %s -crop %dx%d+%d+%d -background black -gravity North -extent %dx%d +repage -quality 95 %s" % (SRC_PATH, WIDTH, HEIGHT, x, y, WIDTH, HEIGHT, TGT_DIR+"/"+tileName)
+	elif x < 0 and y < 0:
+		ccl = "convert %s -crop %dx%d+%d+%d -background black -gravity NorthEast -extent %dx%d +repage -quality 95 %s" % (SRC_PATH, WIDTH, HEIGHT, x, y, WIDTH, HEIGHT, TGT_DIR+"/"+tileName)
+	else:
+		ccl = "echo Other case"
 	os.system(ccl)
 	print "Cropping: %s" % ccl
 
@@ -82,10 +92,18 @@ def buildTiles(tileName, x, y, src_sz, im):
 # Create tiles and ZUIST XML scene from source image
 ################################################################################
 def processSrcImg():
+	global DISPLACE_X, DISPLACE_Y 
 	# source image
 	print "Loading source image from %s" % SRC_PATH
 	im = Image.open(SRC_PATH)
 	src_sz = im.size
+	if COLS*(WIDTH+BEZELWIDTH)-BEZELWIDTH > src_sz[0] and DISPLACE_X == 0:
+		DISPLACE_X = (src_sz[0]-(COLS*(WIDTH+BEZELWIDTH)-BEZELWIDTH)) / 2
+
+	if ROWS*(HEIGHT+BEZELHEIGHT)-BEZELHEIGHT > src_sz[1] and DISPLACE_Y == 0:
+		DISPLACE_Y = (src_sz[1]-(ROWS*(HEIGHT+BEZELHEIGHT)-BEZELHEIGHT)) / 2
+	
+
 
 	for j in range(0, COLS):
 		for i in range(0, ROWS):
